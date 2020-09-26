@@ -1,26 +1,26 @@
 version: '3'
 services:
-
+  
   mongodb:
     build:
       context: mongo
     image: '${REPO}/rs-mongodb:${TAG}'
     container_name: mongodb
     networks:
-      - robot-shop
+      - rs_network
 
   redis:
     image: 'redis:4.0.6'
     container_name: redis
     networks:
-      - robot-shop
+      - rs_network
 
   rabbitmq:
     image: 'rabbitmq:3.7-management-alpine'
     container_name: rabbitmq
     networks:
-      - robot-shop
-      
+      - rs_network
+
   catalogue:
     build:
       context: catalogue
@@ -29,7 +29,7 @@ services:
     depends_on:
       - mongodb
     networks:
-      - robot-shop
+      - rs_network
 
   user:
     build:
@@ -40,7 +40,7 @@ services:
       - mongodb
       - redis
     networks:
-      - robot-shop
+      - rs_network
 
   cart:
     build:
@@ -50,7 +50,7 @@ services:
     depends_on:
       - redis
     networks:
-      - robot-shop
+      - rs_network
 
   mysql:
     build:
@@ -60,7 +60,7 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      - robot-shop
+      - rs_network
 
   shipping:
     build:
@@ -70,7 +70,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - robot-shop
+      - rs_network
 
   ratings:
     build:
@@ -78,7 +78,7 @@ services:
     image: '${REPO}/rs-ratings:${TAG}'
     container_name: ratings
     networks:
-      - robot-shop
+      - rs_network
     depends_on:
       - mysql
 
@@ -90,7 +90,7 @@ services:
     depends_on:
       - rabbitmq
     networks:
-      - robot-shop
+      - rs_network
 
   dispatch:
     build:
@@ -100,7 +100,7 @@ services:
     depends_on:
       - rabbitmq
     networks:
-      - robot-shop
+      - rs_network
 
   web:
     build:
@@ -115,7 +115,7 @@ services:
     ports:
       - '8080:8080'
     networks:
-      - robot-shop
+      - rs_network
 
 networks:
-  robot-shop: null
+  rs_network: null

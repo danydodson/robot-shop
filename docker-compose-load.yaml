@@ -1,5 +1,6 @@
 version: '3'
 services:
+  
   load:
     image: ${REPO}/rs-load:${TAG}
     build:
@@ -7,6 +8,6 @@ services:
     environment:
       HOST: http://web:8080
     networks:
-      - robot-shop
+      - rs_network
     depends_on:
       - web
