@@ -7,19 +7,19 @@ services:
     image: '${REPO}/rs-mongodb:${TAG}'
     container_name: mongodb
     networks:
-      - rs_network
+      - app_network
 
   redis:
     image: 'redis:4.0.6'
     container_name: redis
     networks:
-      - rs_network
+      - app_network
 
   rabbitmq:
     image: 'rabbitmq:3.7-management-alpine'
     container_name: rabbitmq
     networks:
-      - rs_network
+      - app_network
 
   catalogue:
     build:
@@ -29,7 +29,7 @@ services:
     depends_on:
       - mongodb
     networks:
-      - rs_network
+      - app_network
 
   user:
     build:
@@ -40,7 +40,7 @@ services:
       - mongodb
       - redis
     networks:
-      - rs_network
+      - app_network
 
   cart:
     build:
@@ -50,7 +50,7 @@ services:
     depends_on:
       - redis
     networks:
-      - rs_network
+      - app_network
 
   mysql:
     build:
@@ -60,7 +60,7 @@ services:
     cap_add:
       - NET_ADMIN
     networks:
-      - rs_network
+      - app_network
 
   shipping:
     build:
@@ -70,7 +70,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - rs_network
+      - app_network
 
   ratings:
     build:
@@ -78,7 +78,7 @@ services:
     image: '${REPO}/rs-ratings:${TAG}'
     container_name: ratings
     networks:
-      - rs_network
+      - app_network
     depends_on:
       - mysql
 
@@ -90,7 +90,7 @@ services:
     depends_on:
       - rabbitmq
     networks:
-      - rs_network
+      - app_network
 
   dispatch:
     build:
@@ -100,7 +100,7 @@ services:
     depends_on:
       - rabbitmq
     networks:
-      - rs_network
+      - app_network
 
   web:
     build:
@@ -115,7 +115,7 @@ services:
     ports:
       - '8080:8080'
     networks:
-      - rs_network
+      - app_network
 
 networks:
-  rs_network: null
+  app_network: null

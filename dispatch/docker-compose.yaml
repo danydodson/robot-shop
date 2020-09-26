@@ -8,7 +8,7 @@ services:
       - "5672"
       - "15672:15672"
     networks:
-      - rs_network
+      - app_network
 
   payment:
     build:
@@ -20,7 +20,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - rs_network
+      - app_network
 
   dispatch:
     build:
@@ -30,7 +30,7 @@ services:
     depends_on:
       - rabbitmq
     networks:
-      - rs_network
+      - app_network
 
 networks:
-  rs_network:
+  app_network:

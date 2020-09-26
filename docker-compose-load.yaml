@@ -8,6 +8,6 @@ services:
     environment:
       HOST: http://web:8080
     networks:
-      - rs_network
+      - app_network
     depends_on:
       - web
