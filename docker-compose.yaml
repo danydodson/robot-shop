@@ -1,0 +1,121 @@
+version: '3'
+services:
+
+  mongodb:
+    build:
+      context: mongo
+    image: '${REPO}/rs-mongodb:${TAG}'
+    container_name: mongodb
+    networks:
+      - robot-shop
+
+  redis:
+    image: 'redis:4.0.6'
+    container_name: redis
+    networks:
+      - robot-shop
+
+  rabbitmq:
+    image: 'rabbitmq:3.7-management-alpine'
+    container_name: rabbitmq
+    networks:
+      - robot-shop
+      
+  catalogue:
+    build:
+      context: catalogue
+    image: '${REPO}/rs-catalogue:${TAG}'
+    container_name: catalogue
+    depends_on:
+      - mongodb
+    networks:
+      - robot-shop
+
+  user:
+    build:
+      context: user
+    image: '${REPO}/rs-user:${TAG}'
+    container_name: user
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - robot-shop
+
+  cart:
+    build:
+      context: cart
+    image: '${REPO}/rs-cart:${TAG}'
+    container_name: cart
+    depends_on:
+      - redis
+    networks:
+      - robot-shop
+
+  mysql:
+    build:
+      context: mysql
+    image: '${REPO}/rs-mysql-db:${TAG}'
+    container_name: mysql
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - robot-shop
+
+  shipping:
+    build:
+      context: shipping
+    image: '${REPO}/rs-shipping:${TAG}'
+    container_name: shipping
+    depends_on:
+      - mysql
+    networks:
+      - robot-shop
+
+  ratings:
+    build:
+      context: ratings
+    image: '${REPO}/rs-ratings:${TAG}'
+    container_name: ratings
+    networks:
+      - robot-shop
+    depends_on:
+      - mysql
+
+  payment:
+    build:
+      context: payment
+    image: '${REPO}/rs-payment:${TAG}'
+    container_name: payment
+    depends_on:
+      - rabbitmq
+    networks:
+      - robot-shop
+
+  dispatch:
+    build:
+      context: dispatch
+    image: '${REPO}/rs-dispatch:${TAG}'
+    container_name: dispatch
+    depends_on:
+      - rabbitmq
+    networks:
+      - robot-shop
+
+  web:
+    build:
+      context: web
+    image: '${REPO}/rs-web:${TAG}'
+    container_name: web
+    depends_on:
+      - catalogue
+      - user
+      - shipping
+      - payment
+    ports:
+      - '8080:8080'
+    networks:
+      - robot-shop
+
+networks:
+  robot-shop: null
